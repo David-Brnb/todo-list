@@ -51,7 +51,11 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "storybook": "EXPO_PUBLIC_STORYBOOK_ENABLED=true expo start --clear",
+    "storybook:ios": "EXPO_PUBLIC_STORYBOOK_ENABLED=true expo start --ios --clear",
+    "storybook:android": "EXPO_PUBLIC_STORYBOOK_ENABLED=true expo start --android --clear",
+    "storybook-generate": "sb-rn-get-stories --config-path .rnstorybook"
   },
   "private": true,
   "resolutions": {
