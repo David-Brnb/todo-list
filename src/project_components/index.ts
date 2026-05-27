@@ -37,3 +37,5 @@ export { Checkbox } from "./task-card/checkbox";
 export { ColorSwatch } from "./color-swatch";
 export { IconSwatch } from "./icon-swatch";
 
+export { ErrorModal } from "./error-modal";
+export { LoadingModal } from "./loading-modal";

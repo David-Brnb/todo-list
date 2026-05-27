@@ -1,0 +1,58 @@
+import { Modal } from "react-native";
+import { SymbolView } from "expo-symbols";
+import { Text, View } from "@/tw";
+import { Button } from "../button/button";
+
+type ErrorModalProps = {
+  visible: boolean;
+  message: string;
+  onClose: () => void;
+  title?: string;
+};
+
+export function ErrorModal({
+  visible,
+  message,
+  onClose,
+  title = "Ups, algo está mal",
+}: ErrorModalProps) {
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <View
+        style={{ flex: 1, backgroundColor: "rgba(15, 23, 42, 0.6)" }}
+        className="justify-center items-center px-6"
+      >
+        <View className="w-full max-w-sm rounded-3xl bg-surface p-6 items-center border border-border shadow-2xl">
+          <View className="h-16 w-16 items-center justify-center rounded-full bg-red-50 mb-4">
+            <SymbolView
+              name={{
+                ios: "exclamationmark.circle.fill",
+                android: "error",
+                web: "error",
+              }}
+              size={36}
+              tintColor="#EF4444"
+            />
+          </View>
+          <Text className="font-manrope text-xl font-bold text-ink mb-2 text-center">
+            {title}
+          </Text>
+          <Text className="font-inter text-sm text-ink-secondary mb-6 text-center leading-relaxed">
+            {message}
+          </Text>
+          <Button
+            text="Entendido"
+            bgColor="#005BBF"
+            textColor="#FFFFFF"
+            onClick={onClose}
+          />
+        </View>
+      </View>
+    </Modal>
+  );
+}
