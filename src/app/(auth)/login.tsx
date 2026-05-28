@@ -11,6 +11,8 @@ import {
   PasswordInput,
   SingleLineInput,
 } from "@/project_components";
+import { getUserById } from "@/services/axios/users/getUserById";
+import { auth } from "@/services/firebase/auth";
 import { login } from "@/services/firebase/authService";
 import { useAuthStore } from "@/stores/auth";
 
@@ -59,8 +61,10 @@ export default function LoginScreen() {
     setLoadingModalVisible(true);
     try {
       const token = await login(trimmedEmail, password);
-      await signIn(trimmedEmail, token);
+      const userDTO = await getUserById(auth.currentUser!.uid);
+      await signIn(userDTO, token);
       setLoadingModalVisible(false);
+      console.log(userDTO);
     } catch (err: any) {
       setLoadingModalVisible(false);
       const message =

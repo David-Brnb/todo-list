@@ -1,16 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
-
-export type User = {
-  id: string;
-  email: string;
-};
+import { UserDTO } from '@/types/userDTO';
 
 type AuthState = {
-  user: User | null;
+  user: UserDTO | null;
   token: string | null;
   hydrated: boolean;
-  signIn: (email: string, token: string) => Promise<void>;
+  signIn: (user: UserDTO, token: string) => Promise<void>;
   signOut: () => Promise<void>;
   hydrate: () => Promise<void>;
 };
@@ -23,11 +19,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   token: null,
   hydrated: false,
 
-  signIn: async (email, token) => {
-    if (!email.trim() || !token.trim()) {
-      throw new Error('Email and token are required');
-    }
-    const user: User = { id: '1', email };
+  signIn: async (user, token) => {
     await AsyncStorage.setItem(TOKEN_KEY, token);
     await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
     set({ user, token });
@@ -45,11 +37,10 @@ export const useAuthStore = create<AuthState>((set) => ({
         AsyncStorage.getItem(TOKEN_KEY),
         AsyncStorage.getItem(USER_KEY),
       ]);
-      const user = userRaw ? (JSON.parse(userRaw) as User) : null;
+      const user = userRaw ? (JSON.parse(userRaw) as UserDTO) : null;
       set({ token, user });
     } finally {
       set({ hydrated: true });
     }
   },
 }));
-

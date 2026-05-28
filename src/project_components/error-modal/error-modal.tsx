@@ -1,4 +1,4 @@
-import { Modal } from "react-native";
+import { Modal, Pressable } from "react-native";
 import { SymbolView } from "expo-symbols";
 import { Text, View } from "@/tw";
 import { Button } from "../button/button";
@@ -8,6 +8,8 @@ type ErrorModalProps = {
   message: string;
   onClose: () => void;
   title?: string;
+  actionText?: string;
+  onAction?: () => void;
 };
 
 export function ErrorModal({
@@ -15,6 +17,8 @@ export function ErrorModal({
   message,
   onClose,
   title = "Ups, algo está mal",
+  actionText,
+  onAction,
 }: ErrorModalProps) {
   return (
     <Modal
@@ -45,12 +49,25 @@ export function ErrorModal({
           <Text className="font-inter text-sm text-ink-secondary mb-6 text-center leading-relaxed">
             {message}
           </Text>
-          <Button
-            text="Entendido"
-            bgColor="#005BBF"
-            textColor="#FFFFFF"
-            onClick={onClose}
-          />
+          <View className="w-full gap-2">
+            <Button
+              text={actionText || "Entendido"}
+              bgColor="#005BBF"
+              textColor="#FFFFFF"
+              onClick={() => {
+                if (onAction) {
+                  onAction();
+                } else {
+                  onClose();
+                }
+              }}
+            />
+            {actionText ? (
+              <Pressable onPress={onClose} className="w-full items-center py-2 mt-1 active:opacity-70">
+                <Text className="font-inter text-sm font-semibold text-gray-500">Cancelar</Text>
+              </Pressable>
+            ) : null}
+          </View>
         </View>
       </View>
     </Modal>
