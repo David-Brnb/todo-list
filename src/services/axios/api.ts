@@ -2,7 +2,7 @@ import { auth } from "@/services/firebase/auth";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8080/",
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
   timeout: 5000,
 });
 
