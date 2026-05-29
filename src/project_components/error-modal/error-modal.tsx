@@ -1,6 +1,6 @@
-import { Modal, Pressable } from "react-native";
-import { SymbolView } from "expo-symbols";
 import { Text, View } from "@/tw";
+import { SymbolView } from "expo-symbols";
+import { Modal, Pressable } from "react-native";
 import { Button } from "../button/button";
 
 type ErrorModalProps = {
@@ -16,7 +16,7 @@ export function ErrorModal({
   visible,
   message,
   onClose,
-  title = "Ups, algo está mal",
+  title = "Something, went wrong",
   actionText,
   onAction,
 }: ErrorModalProps) {

@@ -47,8 +47,8 @@ type Props = React.ComponentProps<typeof View> & {
   icon: React.ReactElement<{ color?: string }>;
   color: string;
   progress: number;
-  lastCompletedTitle: string;
-  lastCompletedAt: Date | string | number;
+  onClick?: () => void;
+  lastTaskTitle?: string;
 };
 
 export function TaskListMain({
@@ -57,9 +57,9 @@ export function TaskListMain({
   icon,
   color,
   progress,
-  lastCompletedTitle,
-  lastCompletedAt,
+  onClick,
   className,
+  lastTaskTitle = "",
   ...p
 }: Props) {
   const softColor = softenHex(color, 0.7);
@@ -88,7 +88,7 @@ export function TaskListMain({
             numberOfLines={1}
             className="flex-1 font-inter text-sm font-medium leading-5 text-ink-secondary"
           >
-            {lastCompletedTitle}
+            {lastTaskTitle}
           </Text>
           <Text
             style={{ color }}
@@ -98,15 +98,6 @@ export function TaskListMain({
           </Text>
         </View>
         <ProgressBar value={progress} color={color} />
-      </View>
-
-      <View className="mt-4 flex-row items-center gap-2">
-        <Text className="font-inter text-xs leading-4 text-ink-secondary">
-          ⏱
-        </Text>
-        <Text className="font-inter text-xs font-normal leading-4 text-ink-secondary">
-          {formatTimeAgo(lastCompletedAt)}
-        </Text>
       </View>
     </View>
   );

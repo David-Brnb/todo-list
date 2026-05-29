@@ -10,7 +10,7 @@ export function IconSwatch({ icon, selected, className, ...p }: Props) {
   return (
     <Pressable
       className={cn(
-        'h-14 w-14 items-center justify-center rounded-xl',
+        'h-14 w-14 items-center justify-center rounded-xl will-change-variable',
         selected ? 'bg-surface border-b-2 border-brand shadow-sm' : 'bg-surface-alt',
         className,
       )}
