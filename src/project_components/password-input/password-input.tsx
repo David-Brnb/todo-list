@@ -44,7 +44,7 @@ export function PasswordInput({
           }}
           placeholderTextColor="rgba(114, 119, 133, 0.6)"
           className={cn(
-            "h-14 rounded-xl border border-border bg-surface px-5 font-inter text-base text-ink",
+            "h-14 rounded-xl border border-border bg-surface px-4 font-inter text-base text-ink",
             showToggle && "pr-16",
             className,
           )}

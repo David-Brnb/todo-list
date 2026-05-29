@@ -1,4 +1,4 @@
-import { TaskListWithOldestPendingPageDTO } from "@/types/taskListWithOldestPending";
+import { TaskListWithOldestPendingPageDTO } from "@/types/taskLists/taskListWithOldestPending";
 import api from "../api";
 
 export const getUserTaskLists = async (page: number): Promise<TaskListWithOldestPendingPageDTO> => {

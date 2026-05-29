@@ -4,7 +4,7 @@ import { cn } from "../cn";
 
 type Props = React.ComponentProps<typeof Pressable> & {
   title: string;
-  icon: React.ReactElement<{ color?: string }>;
+  icon?: React.ReactElement<{ color?: string }>;
   bgColor: string;
 };
 
@@ -24,7 +24,7 @@ export function TaskListLite({
       )}
       {...p}
     >
-      {React.cloneElement(icon, { color: "#FFFFFF" })}
+      {icon && React.cloneElement(icon, { color: "#FFFFFF" })}
       <Text className="font-inter text-sm font-medium leading-5 text-white">
         {title}
       </Text>

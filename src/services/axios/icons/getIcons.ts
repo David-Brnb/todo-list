@@ -1,4 +1,4 @@
-import { IconDTO } from "@/types/iconDTO";
+import { IconDTO } from "@/types/icons/iconDTO";
 import api from "../api";
 
 export const getIcons = async (): Promise<IconDTO[]> => {

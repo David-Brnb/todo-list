@@ -4,8 +4,8 @@ export interface TaskDTO {
     description: string,
     dueDate: string,
     priority: string,
-    isCompleted: boolean,
-    tasklistIds: number[],
+    completed: boolean,
+    taskListIds: number[],
 }
 
 export interface taskColorDto {
@@ -14,7 +14,7 @@ export interface taskColorDto {
     description: string,
     dueDate: string,
     priority: string,
-    isCompleted: boolean,
-    tasklistIds: number[],
+    completed: boolean,
+    taskListIds: number[],
     taskListColor: string,
 }

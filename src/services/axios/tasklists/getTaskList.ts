@@ -1,5 +1,5 @@
 import api from "@/services/axios/api";
-import { TaskListDTO } from "@/types/listTaskLists";
+import { TaskListDTO } from "@/types/taskLists/listTaskLists";
 
 export const getTaskList = async (id: number): Promise<TaskListDTO | null> => {
     try {

@@ -27,6 +27,9 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(app)" />
         <Stack.Screen name="tasklist/[id]" />
+        <Stack.Screen name="tasklist/add-task" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="tasklist/edit-task" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="tasklist/edit-tasklist" options={{ presentation: 'modal' }} />
       </Stack>
     </GestureHandlerRootView>
   );

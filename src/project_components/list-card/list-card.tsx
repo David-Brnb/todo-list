@@ -26,7 +26,7 @@ export function ListCard({
       <IconBadge icon={icon} color={color} />
       <HeadingM className="mt-4 text-base">{title}</HeadingM>
       <Caption className="mt-1">
-        {taskCount} {taskCount === 1 ? "tarea" : "tareas"}
+        {taskCount} {taskCount === 1 ? "task" : "tasks"}
       </Caption>
     </Pressable>
   );
