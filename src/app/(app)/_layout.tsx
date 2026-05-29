@@ -1,6 +1,5 @@
-import { Redirect } from 'expo-router';
+import { Redirect, Stack } from 'expo-router';
 
-import AppTabs from '@/components/app-tabs';
 import { useAuthStore } from '@/stores/auth';
 
 export default function AppLayout() {
@@ -10,5 +9,15 @@ export default function AppLayout() {
   if (!hydrated) return null;
   if (!user) return <Redirect href="/(auth)/login" />;
 
-  return <AppTabs />;
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen
+        name="add-tasklist"
+        options={{
+          presentation: 'modal',
+        }}
+      />
+    </Stack>
+  );
 }

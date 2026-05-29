@@ -20,7 +20,7 @@ export function ColorSwatch({
     <Pressable
       style={{ width: size, height: size, backgroundColor: color }}
       className={cn(
-        'items-center justify-center rounded-2xl',
+        'items-center justify-center rounded-2xl will-change-variable',
         selected && 'border-4 border-canvas shadow-[0_0_0_4px_var(--color-brand-softer)]',
         className,
       )}

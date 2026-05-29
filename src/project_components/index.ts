@@ -35,6 +35,7 @@ export { Card } from "./task-card/card";
 export { Checkbox } from "./task-card/checkbox";
 
 export { ColorSwatch } from "./color-swatch";
+export { ColorWheel } from "./color-wheel";
 export { IconSwatch } from "./icon-swatch";
 
 export { ErrorModal } from "./error-modal";

@@ -7,11 +7,23 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(async (config) => {
-  const user = auth.currentUser;
-  if (user) {
-    const token = await user.getIdToken();
+  let token = null;
+
+  try {
+    const { useAuthStore } = await import("@/stores/auth");
+    token = useAuthStore.getState().token;
+  } catch (e) {
+    // Evitar errores de inicialización temprana
+  }
+
+  if (!token && auth.currentUser) {
+    token = await auth.currentUser.getIdToken();
+  }
+
+  if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
