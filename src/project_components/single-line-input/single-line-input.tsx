@@ -40,7 +40,7 @@ export function SingleLineInput({
         textAlignVertical="center"
         placeholderTextColor="rgba(114, 119, 133, 0.6)"
         className={cn(
-          "h-14 rounded-xl border border-border bg-surface px-5 font-inter text-base leading-none text-ink",
+          "h-14 rounded-xl border border-border bg-surface px-4 font-inter text-base leading-none text-ink",
           className,
         )}
         {...p}

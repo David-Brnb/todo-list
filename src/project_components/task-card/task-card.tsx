@@ -1,4 +1,6 @@
 import { Pressable, Text, View } from "@/tw";
+import { IconDTO } from "@/types/icons/iconDTO";
+import { SymbolView } from "expo-symbols";
 import { useRef, useState } from "react";
 import { Dimensions, Modal, View as RNView } from "react-native";
 import { cn } from "../cn";
@@ -9,6 +11,7 @@ type Props = {
   title: string;
   description?: string;
   color: string;
+  icon?: IconDTO | null;
   isCompleted?: boolean;
   onPress?: () => void;
   onToggle?: () => void;
@@ -17,6 +20,8 @@ type Props = {
   className?: string;
 };
 
+const DEFAULT_ICON = "checklist";
+
 const MENU_WIDTH = 160;
 const MENU_OFFSET = 4;
 
@@ -24,6 +29,7 @@ export function TaskCard({
   title,
   description,
   color,
+  icon,
   isCompleted,
   onPress,
   onToggle,
@@ -70,6 +76,24 @@ export function TaskCard({
         }
       >
         <Checkbox checked={!!isCompleted} onPress={onToggle} />
+
+        {/* Icon comes from the list's icon data, tinted with the list color */}
+        <View
+          className="h-10 w-10 items-center justify-center rounded-lg"
+          style={{ backgroundColor: `${color}1A` }}
+        >
+          <SymbolView
+            name={
+              {
+                ios: icon?.iosName ?? DEFAULT_ICON,
+                android: icon?.androidName ?? DEFAULT_ICON,
+                web: icon?.androidName ?? icon?.iosName ?? DEFAULT_ICON,
+              } as React.ComponentProps<typeof SymbolView>["name"]
+            }
+            size={20}
+            tintColor={isCompleted ? "#9CA3AF" : color}
+          />
+        </View>
 
         <View className="flex-1 gap-0.5">
           {isCompleted ? (

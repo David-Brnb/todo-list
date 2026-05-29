@@ -1,12 +1,12 @@
-import { IconDTO } from "./iconDTO";
+import { IconDTO } from "../icons/iconDTO";
 
 export interface TaskListDTO {
     id: number;
     name: string;
     color: string;
     description: string;
-    ownerId: string | null;
-    icon: IconDTO | null;
+    ownerId: string;
+    icon: IconDTO;
 }
 
 export interface TaskListPageDTO {

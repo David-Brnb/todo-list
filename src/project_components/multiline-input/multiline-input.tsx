@@ -41,8 +41,11 @@ export function MultilineInput({
           onChangeText?.(text);
         }}
         placeholderTextColor="rgba(114, 119, 133, 0.6)"
+        // Pad via style: multiline TextInput doesn't reliably apply vertical
+        // padding from className, so the top inset would be dropped.
+        style={{ padding: 16 }}
         className={cn(
-          "min-h-[106px] rounded-xl border border-border bg-surface px-5 py-4 font-inter text-base text-ink",
+          "min-h-[106px] rounded-xl border border-border bg-surface font-inter text-base text-ink",
           className,
         )}
         {...p}

@@ -1,6 +1,6 @@
+import { UserDTO } from '@/types/users/userDTO';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
-import { UserDTO } from '@/types/userDTO';
 
 type AuthState = {
   user: UserDTO | null;

@@ -97,7 +97,7 @@ export function DatePicker({
 
       <Pressable
         onPress={handleOpen}
-        className="h-18 flex-row items-center gap-3 self-stretch rounded-xl bg-surface-disabled p-4"
+        className="h-13 flex-row items-center gap-3 self-stretch rounded-xl bg-surface-disabled p-4"
       >
         <SymbolView
           name={{ ios: "calendar", android: "calendar_today", web: "calendar_today" }}

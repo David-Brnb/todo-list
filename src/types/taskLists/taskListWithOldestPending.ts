@@ -1,4 +1,4 @@
-import { IconDTO } from "./iconDTO";
+import { IconDTO } from "../icons/iconDTO";
 
 export interface BackendTaskDTO {
   id: number;

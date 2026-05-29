@@ -1,6 +1,6 @@
 import { router, useFocusEffect } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -11,8 +11,8 @@ import { Add, TaskListMain, TodayCard } from "@/project_components";
 import { getUserTaskLists } from "@/services/axios/tasklists/getUserTaskLists";
 import { getTodayTasks } from "@/services/axios/tasks/getTodayTasks";
 import { useAuthStore } from "@/stores/auth";
-import { taskColorDto } from "@/types/taskDto";
-import { TaskListWithOldestPendingDTO } from "@/types/taskListWithOldestPending";
+import { TaskListWithOldestPendingDTO } from "@/types/taskLists/taskListWithOldestPending";
+import { taskColorDto } from "@/types/tasks/taskDto";
 
 export default function HomeScreen() {
   const user = useAuthStore((s) => s.user);
@@ -21,6 +21,9 @@ export default function HomeScreen() {
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
+  // Synchronous guard: state updates are async, so onEndReached can fire
+  // several times before `loading` flips and fetch the same page twice.
+  const loadingRef = useRef<boolean>(false);
 
   const fetchTodayTasks = useCallback(() => {
     getTodayTasks()
@@ -32,6 +35,7 @@ export default function HomeScreen() {
     setPage(1);
     setHasMore(true);
     setUserTaskLists([]);
+    loadingRef.current = true;
     setLoading(true);
 
     getUserTaskLists(1)
@@ -41,7 +45,10 @@ export default function HomeScreen() {
         setPage(2);
       })
       .catch(() => setUserTaskLists([]))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        loadingRef.current = false;
+        setLoading(false);
+      });
   }, []);
 
   useFocusEffect(
@@ -53,17 +60,23 @@ export default function HomeScreen() {
 
 
   const loadMoreTaskLists = async () => {
-    if (loading || !hasMore) return;
+    if (loadingRef.current || !hasMore) return;
 
+    loadingRef.current = true;
     setLoading(true);
     try {
       const response = await getUserTaskLists(page);
-      setUserTaskLists((prev) => [...prev, ...(response?.items || [])]);
+      setUserTaskLists((prev) => {
+        const seen = new Set(prev.map((list) => list.id));
+        const next = (response?.items || []).filter((list) => !seen.has(list.id));
+        return [...prev, ...next];
+      });
       setHasMore(response?.hasMore ?? false);
       setPage((prev) => prev + 1);
     } catch (error) {
       console.log("Error al cargar más listas:", error);
     } finally {
+      loadingRef.current = false;
       setLoading(false);
     }
   };
@@ -112,7 +125,7 @@ export default function HomeScreen() {
             onPress={() => router.push(`/tasklist/${item.id}`)}
           >
             <TaskListMain
-              tag={item.progress.toString()+"%"}
+              tag={Math.round(item.progress)+"%"}
               title={item.name}
               icon={
                 <SymbolView

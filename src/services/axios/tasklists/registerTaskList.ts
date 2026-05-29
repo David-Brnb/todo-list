@@ -1,4 +1,4 @@
-import { createListDto } from "@/types/createListDto";
+import { createListDto } from "@/types/taskLists/createListDto";
 import api from "../api";
 
 export const createList = async (task: createListDto): Promise<void> => {

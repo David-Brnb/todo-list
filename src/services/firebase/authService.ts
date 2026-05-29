@@ -1,4 +1,4 @@
-import { RegisterUserInfo } from "@/types/registerUserInfo";
+import { RegisterUserInfo } from "@/types/users/registerUserInfo";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,

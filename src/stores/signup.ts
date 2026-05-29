@@ -1,5 +1,5 @@
+import { RegisterUserInfo } from '@/types/users/registerUserInfo';
 import { create } from 'zustand';
-import { RegisterUserInfo } from '@/types/registerUserInfo';
 
 type SignupState = RegisterUserInfo & {
   setField: <K extends keyof RegisterUserInfo>(key: K, value: RegisterUserInfo[K]) => void;

@@ -1,4 +1,4 @@
-import { taskColorDto } from "@/types/taskDto";
+import { taskColorDto } from "@/types/tasks/taskDto";
 import api from "../api";
 
 export const getTodayTasks = async (): Promise<taskColorDto[]> => {
