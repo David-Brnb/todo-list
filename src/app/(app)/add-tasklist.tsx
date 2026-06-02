@@ -5,6 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import { SymbolView } from "expo-symbols";
 import { useEffect, useState } from "react";
 
+import { getErrorMessage } from "@/services/axios/errors";
 import { getIcons } from "@/services/axios/icons/getIcons";
 import { createList } from "@/services/axios/tasklists/registerTaskList";
 import { Color, colorsList } from "@/types/colors/color";
@@ -56,17 +57,23 @@ export default function AddTaskListScreen() {
       return;
     }
 
-    console.log("Registrando lista de tareas");
-    
     setLoading(true);
-    await createList({
-      name: taskListTitle,
-      color: listColor,
-      description: listDescription,
-      iconId: listIcon,
-    });
-    setLoading(false);
-    router.back();
+    try {
+      await createList({
+        name: taskListTitle,
+        color: listColor,
+        description: listDescription,
+        iconId: listIcon,
+      });
+      router.back();
+    } catch (err) {
+      setErrorMessage(
+        getErrorMessage(err, "Something went wrong creating the list. Please try again."),
+      );
+      setErrorVisible(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

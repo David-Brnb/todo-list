@@ -7,6 +7,7 @@ type AuthState = {
   token: string | null;
   hydrated: boolean;
   signIn: (user: UserDTO, token: string) => Promise<void>;
+  setToken: (token: string) => Promise<void>;
   signOut: () => Promise<void>;
   hydrate: () => Promise<void>;
 };
@@ -23,6 +24,13 @@ export const useAuthStore = create<AuthState>((set) => ({
     await AsyncStorage.setItem(TOKEN_KEY, token);
     await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
     set({ user, token });
+  },
+
+  // Persist a freshly-minted token (e.g. after the interceptor refreshes it)
+  // without touching the cached user, so the AsyncStorage fallback stays current.
+  setToken: async (token) => {
+    await AsyncStorage.setItem(TOKEN_KEY, token);
+    set({ token });
   },
 
   signOut: async () => {

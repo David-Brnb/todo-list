@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { BrandLogo } from "@/icons/brand-logo";
 import { Button, ErrorModal } from "@/project_components";
+import { getErrorMessage } from "@/services/axios/errors";
 import { createUser } from "@/services/axios/users/createUser";
 import { auth } from "@/services/firebase/auth";
 import { registerUserWithDetails } from "@/services/firebase/authService";
@@ -82,7 +83,7 @@ export default function SignupConfirmStep() {
         });
       } catch (backendErr) {
         await auth.currentUser?.delete();
-        console.log(backendErr);
+        console.error(backendErr);
         throw backendErr;
       }
 
@@ -91,9 +92,10 @@ export default function SignupConfirmStep() {
       useSignupStore.getState().reset();
     } catch (err: any) {
       setSubmitting(false);
-      const message =
-        err?.message ||
-        "Ocurrió un error inesperado al intentar crear tu cuenta.";
+      const message = getErrorMessage(
+        err,
+        "Ocurrió un error inesperado al intentar crear tu cuenta.",
+      );
       setErrorMessage(message);
 
       if (message.includes("Ya existe una cuenta")) {

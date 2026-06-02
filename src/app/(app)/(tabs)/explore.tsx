@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { BrandLogo } from "@/icons";
-import { DeleteConfirmModal, ListCard, SearchBar, SectionHeading, TaskCard } from "@/project_components";
+import { DeleteConfirmModal, ListCard, LoadingState, SearchBar, SectionHeading, TaskCard } from "@/project_components";
 import { deleteTask } from "@/services/axios/tasks/deleteTask";
 import { setTaskCompleted } from "@/services/axios/tasks/setTaskCompleted";
 import { search } from "@/services/axios/search/search";
@@ -16,6 +16,7 @@ const EMPTY_RESULTS: SearchResultDTO = { taskLists: [], tasks: [] };
 export default function ExploreScreen() {
   const [query, setQuery] = useState<string>("");
   const [results, setResults] = useState<SearchResultDTO>(EMPTY_RESULTS);
+  const [searching, setSearching] = useState<boolean>(false);
   const [taskToDelete, setTaskToDelete] = useState<number | null>(null);
 
   // Search refreshes every 3 characters typed to avoid a call per keystroke.
@@ -23,10 +24,14 @@ export default function ExploreScreen() {
     const trimmed = query.trim();
     if (trimmed.length === 0) {
       setResults(EMPTY_RESULTS);
+      setSearching(false);
       return;
     }
     if (trimmed.length % 3 !== 0) return;
-    search(trimmed).then(setResults);
+    setSearching(true);
+    search(trimmed)
+      .then(setResults)
+      .finally(() => setSearching(false));
   }, [query]);
 
   // Same optimistic toggle behavior as the task list detail screen.
@@ -94,6 +99,8 @@ export default function ExploreScreen() {
           />
           <Text className="font-inter text-base text-ink-secondary">Search something</Text>
         </View>
+      ) : searching && !hasResults ? (
+        <LoadingState message="Searching..." />
       ) : !hasResults ? (
         <View className="flex-1 items-center justify-center px-6">
           <Text className="font-inter text-base text-ink-secondary">No results found</Text>

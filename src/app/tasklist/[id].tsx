@@ -4,10 +4,10 @@ import { SymbolView } from "expo-symbols";
 import { Dimensions, Modal, View as RNView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { BrandLogo } from "@/icons";
-import { Add, DeleteConfirmModal, TaskCard, TaskListHeader, TaskListLite } from "@/project_components";
+import { Add, DeleteConfirmModal, EmptyState, LoadingState, TaskCard, TaskListHeader, TaskListLite } from "@/project_components";
 import { Pressable, Text, View } from "@/tw";
 import { deleteTaskList } from "@/services/axios/tasklists/deleteTaskList";
 import { deleteTask } from "@/services/axios/tasks/deleteTask";
@@ -29,26 +29,39 @@ export default function TaskListDetailScreen() {
   const [listMenu, setListMenu] = useState<{ top: number; left: number } | null>(null);
   const [listDeleteVisible, setListDeleteVisible] = useState<boolean>(false);
 
+  const [loading, setLoading] = useState<boolean>(true);
+
   const { id } = useLocalSearchParams<{ id: string }>();
   const taskListId = Number(id);
 
-  const fetchTasks = () => {
-    getTasksByTLId(taskListId).then((response) => {
+  const fetchTasks = useCallback(() => {
+    return getTasksByTLId(taskListId).then((response) => {
       // Dedupe by id so the FlatList never receives two items with the same key.
       const unique = Array.from(
         new Map(response.map((task) => [task.id, task])).values(),
       );
       setTasks(unique);
     });
-  };
+  }, [taskListId]);
 
   // Refetch on focus so returning from the add-task sheet shows new tasks.
-  useFocusEffect(() => {
-    getTaskList(taskListId).then((response) => {
-      setTaskList(response);
-    });
-    fetchTasks();
-  });
+  // The spinner only shows on the first load; later focus refetches are silent.
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+      Promise.all([
+        getTaskList(taskListId).then((response) => {
+          if (active) setTaskList(response);
+        }),
+        fetchTasks(),
+      ]).finally(() => {
+        if (active) setLoading(false);
+      });
+      return () => {
+        active = false;
+      };
+    }, [taskListId, fetchTasks]),
+  );
 
   // Optimistically toggle the "done" state so the UI reacts instantly, then
   // persist it via PATCH /task/{id}/completed. Roll back if the request fails.
@@ -166,12 +179,22 @@ export default function TaskListDetailScreen() {
       </View>
 
       <View className="flex-1 px-6">
+        {loading ? (
+          <LoadingState color={accentColor} message="Loading tasks..." />
+        ) : (
         <FlatList
           data={tasks}
           keyExtractor={(item) => item.id.toString()}
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <View className="h-3" />}
           contentContainerStyle={{ paddingBottom: 24 }}
+          ListEmptyComponent={
+            <EmptyState
+              icon={{ ios: "checklist", android: "checklist", web: "checklist" }}
+              title="No tasks yet"
+              message="Add your first task with the + button below."
+            />
+          }
           ListHeaderComponent={() => (
             <View>
             <TaskListHeader
@@ -205,6 +228,7 @@ export default function TaskListDetailScreen() {
             />
           )}
         />
+        )}
       </View>
 
       {/* Floating add-task button — opens the add-task screen as an iOS sheet */}

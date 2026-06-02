@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { BrandLogo } from "@/icons";
 import { Pressable, Text, View } from "@/tw";
 
-import { Add, TaskListMain, TodayCard } from "@/project_components";
+import { Add, EmptyState, LoadingState, TaskListMain, TodayCard } from "@/project_components";
 import { getUserTaskLists } from "@/services/axios/tasklists/getUserTaskLists";
 import { getTodayTasks } from "@/services/axios/tasks/getTodayTasks";
 import { useAuthStore } from "@/stores/auth";
@@ -74,7 +74,7 @@ export default function HomeScreen() {
       setHasMore(response?.hasMore ?? false);
       setPage((prev) => prev + 1);
     } catch (error) {
-      console.log("Error al cargar más listas:", error);
+      console.error("Error al cargar más listas:", error);
     } finally {
       loadingRef.current = false;
       setLoading(false);
@@ -111,9 +111,15 @@ export default function HomeScreen() {
             
             <View className="gap-1 w-full mb-6">
               <Text className="font-inter text-gray-700">Due today</Text>
-              {todayTasks.map((task) => (
-                <TodayCard key={task.id} title={task.title} time={task.dueDate} color={task.taskListColor} />
-              ))}
+              {todayTasks.length > 0 ? (
+                todayTasks.map((task) => (
+                  <TodayCard key={task.id} title={task.title} time={task.dueDate} color={task.taskListColor} />
+                ))
+              ) : (
+                <Text className="font-inter text-sm text-ink-secondary py-1">
+                  Nothing due today — enjoy the calm. 🌤️
+                </Text>
+              )}
             </View>
 
             <Text className="font-inter text-gray-700 mb-2">Projects</Text>
@@ -146,6 +152,17 @@ export default function HomeScreen() {
         )}
         onEndReached={loadMoreTaskLists}
         onEndReachedThreshold={0.5}
+        ListEmptyComponent={
+          loading ? (
+            <LoadingState message="Loading your projects..." />
+          ) : (
+            <EmptyState
+              icon={{ ios: "square.stack.3d.up", android: "layers", web: "layers" }}
+              title="No projects yet"
+              message="Tap the + button to create your first task list."
+            />
+          )
+        }
       />
       <Add
         icon={<SymbolView name={{ ios: "plus", android: "add", web: "add" }} size={24} tintColor="white" />}

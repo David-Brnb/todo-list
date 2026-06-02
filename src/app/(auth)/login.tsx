@@ -11,6 +11,7 @@ import {
   PasswordInput,
   SingleLineInput,
 } from "@/project_components";
+import { getErrorMessage } from "@/services/axios/errors";
 import { getUserById } from "@/services/axios/users/getUserById";
 import { auth } from "@/services/firebase/auth";
 import { login } from "@/services/firebase/authService";
@@ -64,12 +65,12 @@ export default function LoginScreen() {
       const userDTO = await getUserById(auth.currentUser!.uid);
       await signIn(userDTO, token);
       setLoadingModalVisible(false);
-      console.log(userDTO);
     } catch (err: any) {
       setLoadingModalVisible(false);
-      const message =
-        err?.message ||
-        "Ocurrió un error inesperado al intentar iniciar sesión.";
+      const message = getErrorMessage(
+        err,
+        "Ocurrió un error inesperado al intentar iniciar sesión.",
+      );
       // Wait for the loading modal's dismiss animation to finish before
       // opening the error modal — iOS can't transition two Modals at once.
       setTimeout(() => {

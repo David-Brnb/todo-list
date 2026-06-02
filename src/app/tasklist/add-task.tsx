@@ -1,4 +1,5 @@
 import { Button, DatePicker, ErrorModal, LoadingModal, MultilineInput, PrioritySelector, SingleLineInput, type Priority } from "@/project_components";
+import { getErrorMessage } from "@/services/axios/errors";
 import { registerTask } from "@/services/axios/tasks/registerTask";
 import { Pressable, ScrollView, Text, View } from "@/tw";
 import { router, useLocalSearchParams } from "expo-router";
@@ -45,8 +46,10 @@ export default function AddTaskScreen() {
         taskListIds: [Number(id)],
       });
       router.back();
-    } catch {
-      setErrorMessage("Something went wrong creating the task. Please try again.");
+    } catch (err) {
+      setErrorMessage(
+        getErrorMessage(err, "Something went wrong creating the task. Please try again."),
+      );
       setErrorVisible(true);
     } finally {
       setLoading(false);

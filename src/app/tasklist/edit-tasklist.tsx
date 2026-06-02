@@ -6,6 +6,7 @@ import { SymbolView } from "expo-symbols";
 import { useEffect, useState } from "react";
 import { ActivityIndicator } from "react-native";
 
+import { getErrorMessage } from "@/services/axios/errors";
 import { getIcons } from "@/services/axios/icons/getIcons";
 import { getTaskList } from "@/services/axios/tasklists/getTaskList";
 import { updateTaskList } from "@/services/axios/tasklists/updateTaskList";
@@ -95,8 +96,10 @@ export default function EditTaskListScreen() {
         iconId: listIcon,
       });
       router.back();
-    } catch {
-      setErrorMessage("Something went wrong updating the list. Please try again.");
+    } catch (err) {
+      setErrorMessage(
+        getErrorMessage(err, "Something went wrong updating the list. Please try again."),
+      );
       setErrorVisible(true);
     } finally {
       setSaving(false);
