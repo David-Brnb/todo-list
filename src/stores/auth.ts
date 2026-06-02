@@ -1,52 +1,51 @@
-import * as SecureStore from 'expo-secure-store';
+import { UserDTO } from '@/types/users/userDTO';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 
-export type User = {
-  id: string;
-  email: string;
-};
-
 type AuthState = {
-  user: User | null;
+  user: UserDTO | null;
   token: string | null;
   hydrated: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (user: UserDTO, token: string) => Promise<void>;
+  setToken: (token: string) => Promise<void>;
   signOut: () => Promise<void>;
   hydrate: () => Promise<void>;
 };
 
 const TOKEN_KEY = 'auth.token';
 const USER_KEY = 'auth.user';
-const FAKE_TOKEN = 'FAKE_TOKEN_123';
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   token: null,
   hydrated: false,
 
-  signIn: async (email, password) => {
-    if (!email.trim() || !password.trim()) {
-      throw new Error('Email and password are required');
-    }
-    const user: User = { id: '1', email };
-    await SecureStore.setItemAsync(TOKEN_KEY, FAKE_TOKEN);
-    await SecureStore.setItemAsync(USER_KEY, JSON.stringify(user));
-    set({ user, token: FAKE_TOKEN });
+  signIn: async (user, token) => {
+    await AsyncStorage.setItem(TOKEN_KEY, token);
+    await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
+    set({ user, token });
+  },
+
+  // Persist a freshly-minted token (e.g. after the interceptor refreshes it)
+  // without touching the cached user, so the AsyncStorage fallback stays current.
+  setToken: async (token) => {
+    await AsyncStorage.setItem(TOKEN_KEY, token);
+    set({ token });
   },
 
   signOut: async () => {
-    await SecureStore.deleteItemAsync(TOKEN_KEY);
-    await SecureStore.deleteItemAsync(USER_KEY);
+    await AsyncStorage.removeItem(TOKEN_KEY);
+    await AsyncStorage.removeItem(USER_KEY);
     set({ user: null, token: null });
   },
 
   hydrate: async () => {
     try {
       const [token, userRaw] = await Promise.all([
-        SecureStore.getItemAsync(TOKEN_KEY),
-        SecureStore.getItemAsync(USER_KEY),
+        AsyncStorage.getItem(TOKEN_KEY),
+        AsyncStorage.getItem(USER_KEY),
       ]);
-      const user = userRaw ? (JSON.parse(userRaw) as User) : null;
+      const user = userRaw ? (JSON.parse(userRaw) as UserDTO) : null;
       set({ token, user });
     } finally {
       set({ hydrated: true });

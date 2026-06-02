@@ -1,24 +1,24 @@
+import { RegisterUserInfo } from '@/types/users/registerUserInfo';
 import { create } from 'zustand';
 
-export type SignupFields = {
-  email: string;
-  password: string;
-  name: string;
-};
-
-type SignupState = SignupFields & {
-  setField: <K extends keyof SignupFields>(key: K, value: SignupFields[K]) => void;
+type SignupState = RegisterUserInfo & {
+  setField: <K extends keyof RegisterUserInfo>(key: K, value: RegisterUserInfo[K]) => void;
   reset: () => void;
 };
 
-const initial: SignupFields = {
+const initial: RegisterUserInfo = {
   email: '',
   password: '',
-  name: '',
+  full_name: '',
+  rol: '',
+  interests: '',
+  description: '',
+  firebaseImageUuid: '',
+  firebaseUuid: '',
 };
 
 export const useSignupStore = create<SignupState>((set) => ({
   ...initial,
-  setField: (key, value) => set({ [key]: value } as Pick<SignupFields, typeof key>),
+  setField: (key, value) => set({ [key]: value } as Pick<RegisterUserInfo, typeof key>),
   reset: () => set(initial),
 }));

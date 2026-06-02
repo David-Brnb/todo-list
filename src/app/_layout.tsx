@@ -1,43 +1,36 @@
 import '@/global.css';
 
 import { useEffect } from 'react';
-import { Stack, useRouter, useSegments } from 'expo-router';
+import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { useFonts, Manrope_800ExtraBold } from '@expo-google-fonts/manrope';
+import { Inter_400Regular } from '@expo-google-fonts/inter';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useAuthStore } from '@/stores/auth';
-import StorybookUIRoot from '../../.rnstorybook';
 
-const STORYBOOK_ONLY = process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === 'true';
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  if (STORYBOOK_ONLY) {
-    return <StorybookUIRoot />;
-  }
-  return <AppRoot />;
-}
-
-function AppRoot() {
-  const hydrated = useAuthStore((s) => s.hydrated);
-  const user = useAuthStore((s) => s.user);
-  const segments = useSegments();
-  const router = useRouter();
+  const [fontsLoaded] = useFonts({ Manrope_800ExtraBold, Inter_400Regular });
 
   useEffect(() => {
     useAuthStore.getState().hydrate();
   }, []);
 
   useEffect(() => {
-    if (!hydrated) return;
-    const inAuthGroup = segments[0] === '(auth)';
-    if (!user && !inAuthGroup) {
-      router.replace('/(auth)/login');
-    } else if (user && inAuthGroup) {
-      router.replace('/(app)');
-    }
-  }, [hydrated, user, segments, router]);
+    if (fontsLoaded) SplashScreen.hideAsync();
+  }, [fontsLoaded]);
 
-  if (!hydrated) {
-    return null;
-  }
-
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(app)" />
+        <Stack.Screen name="tasklist/[id]" />
+        <Stack.Screen name="tasklist/add-task" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="tasklist/edit-task" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="tasklist/edit-tasklist" options={{ presentation: 'modal' }} />
+      </Stack>
+    </GestureHandlerRootView>
+  );
 }
