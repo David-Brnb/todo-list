@@ -1,4 +1,5 @@
 import { Button, DatePicker, ErrorModal, LoadingModal, MultilineInput, PrioritySelector, SingleLineInput, type Priority } from "@/project_components";
+import { getErrorMessage } from "@/services/axios/errors";
 import { getTaskById } from "@/services/axios/tasks/getTaskById";
 import { updateTask } from "@/services/axios/tasks/updateTask";
 import { Pressable, ScrollView, Text, View } from "@/tw";
@@ -74,8 +75,10 @@ export default function EditTaskScreen() {
         taskListIds,
       });
       router.back();
-    } catch {
-      setErrorMessage("Something went wrong updating the task. Please try again.");
+    } catch (err) {
+      setErrorMessage(
+        getErrorMessage(err, "Something went wrong updating the task. Please try again."),
+      );
       setErrorVisible(true);
     } finally {
       setSaving(false);

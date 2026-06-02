@@ -1,56 +1,167 @@
-# Welcome to your Expo app 👋
+# Scholarly Atelier — Todo List App 📚✅
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A full-stack task-management mobile app built with **React Native + Expo**. Users
+sign in with **Firebase Authentication**, and the app talks to a custom backend
+over an authenticated REST API (Firebase **JWT** ID tokens). You can create and
+organize **task lists**, manage **tasks** (with priority and due dates), search
+across everything, and view your profile.
 
-## Get started
+> Final project for the React Native module. Mobile app lives in this repo; the
+> backend is a separate service (see [Deployed links](#-deployed-links)).
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## ✨ Features
 
-2. Start the app
+- **Firebase email/password auth** with multi-step sign-up (profile photo, role,
+  interests) and a persisted session that survives app restarts.
+- **Home** — today's tasks + paginated list of your projects with progress.
+- **Task lists CRUD** — create/edit (color + icon picker), view detail, delete.
+- **Tasks CRUD** — create/edit (priority, due date), complete toggle, delete,
+  with optimistic UI updates and rollback on failure.
+- **Search** across both lists and tasks.
+- **Profile / About** screen and a working **logout**.
+- Loading spinners, empty states, and HTTP error handling throughout.
 
-   ```bash
-   npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## 🛠 Tech stack
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+| Area       | Tech                                                                  |
+| ---------- | --------------------------------------------------------------------- |
+| Framework  | Expo SDK 56, React Native 0.85, React 19                              |
+| Navigation | expo-router (file-based, native tabs, modal sheets)                   |
+| Styling    | NativeWind v5 / react-native-css (Tailwind), custom `@/tw` primitives |
+| Auth       | Firebase Authentication (email/password) + JWT ID tokens              |
+| Networking | Axios (custom instance + request/response interceptors)               |
+| State      | Zustand (+ AsyncStorage persistence)                                  |
+| Storage    | Firebase Storage (profile photos)                                     |
+| Components | Reusable kit in `src/project_components` (+ Storybook)                |
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+## 📋 Prerequisites
 
-When you're ready, run:
+- **Node.js 20+** and **npm**
+- A **Firebase** project with **Email/Password** auth enabled (and Storage if you
+  want profile photos)
+- The backend running and reachable (locally or deployed)
+- To run on a device/simulator: **Xcode** (iOS) or **Android Studio** (Android),
+  or the **Expo Go** app
+
+---
+
+## 🚀 Installation & running
 
 ```bash
-npm run reset-project
+# 1. Install dependencies
+npm install
+
+# 2. Create your environment file (see below) and fill it in
+cp .env.example .env
+
+# 3. Start the dev server
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Then press `i` (iOS simulator), `a` (Android emulator), or `w` (web), or scan the
+QR code with Expo Go.
 
-### Other setup steps
+```bash
+npm run ios        # open directly in the iOS simulator
+npm run android    # open directly in the Android emulator
+npm run web        # run in the browser
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+> **Note:** This app uses the Firebase JS SDK and native modules; it runs in a
+> development build or simulator. Use the iOS simulator for the most reliable
+> experience.
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+## 🔑 Environment variables
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+All config is provided via **`EXPO_PUBLIC_*`** variables in a `.env` file at the
+project root. A template is in [`.env.example`](./.env.example):
 
-## Join the community
+```bash
+# Firebase (Project settings → General → Your apps → Web app config)
+EXPO_PUBLIC_FIREBASE_API_KEY=
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+EXPO_PUBLIC_FIREBASE_APP_ID=
 
-Join our community of developers creating universal apps.
+# Backend REST API base URL (no trailing slash), e.g. https://api.example.com
+EXPO_PUBLIC_API_URL=
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Notes:
+
+- `EXPO_PUBLIC_*` values are **bundled into the client** and are not secret —
+  the Firebase _web_ config is safe to commit/share for evaluation.
+- The app reads these at build time. After editing `.env`, restart the dev
+  server with `npx expo start --clear`.
+- **Don't use `http://localhost`** for `EXPO_PUBLIC_API_URL` on a real device —
+  `localhost` points at the device itself. Use your machine's LAN IP
+  (`http://192.168.x.x:PORT`) for local testing, or the deployed HTTPS URL.
+
+---
+
+## 🌐 Deployed links
+
+- **Backend API:** `https://to-do-860378882125.us-central1.run.app` — deployed on
+  Google Cloud Run and already set as `EXPO_PUBLIC_API_URL` in `.env`. (It may
+  cold-start on the first request after being idle, hence the 30s client timeout.)
+- **Web deploy:** managed separately, outside this repository.
+
+## 👤 Test user
+
+You can register a fresh account from the sign-up screen, or use the demo account:
+
+- **Email:** `2@gmail.com`
+- **Password:** `12345678`
+
+---
+
+## 🧱 Project structure
+
+```
+src/
+  app/                  # expo-router routes
+    (auth)/             # login + multi-step signup (redirects out if logged in)
+    (app)/              # authenticated area (redirects to login if not)
+      (tabs)/           # Home, Explore (search), Account
+      add-tasklist.tsx  # modal sheets
+    tasklist/           # list detail [id] + add/edit task & list (modals)
+  project_components/   # reusable UI kit (Button, TaskCard, EmptyState, ...)
+  services/
+    axios/              # api instance + interceptors + per-domain services
+    firebase/           # app, auth (AsyncStorage persistence), storage
+  stores/               # Zustand stores (auth, signup)
+  types/                # DTOs per domain
+  tw/                   # NativeWind-aware View/Text/Pressable/... primitives
+```
+
+### Architecture notes
+
+- **Axios instance** (`src/services/axios/api.ts`) attaches a live Firebase JWT
+  on every request and, on `401`, transparently refreshes the token once and
+  retries; if refresh fails it signs the user out. 30s timeout for cold-starting
+  hosts.
+- **Auth/session** persists via Firebase (`initializeAuth` + AsyncStorage) and a
+  Zustand store; route groups guard access (`(app)` vs `(auth)`).
+- **Services** follow one pattern: `try/catch` → `console.error` → rethrow
+  (mutations) or return an empty value (queries).
+
+---
+
+## 📜 Available scripts
+
+| Script                            | Description                 |
+| --------------------------------- | --------------------------- |
+| `npm start`                       | Start the Expo dev server   |
+| `npm run ios` / `android` / `web` | Open on a specific platform |
+| `npm run lint`                    | Run Expo's ESLint           |
+| `npm run storybook:ios`           | Run the component Storybook |
