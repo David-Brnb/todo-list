@@ -54,13 +54,17 @@ across everything, and view your profile.
 ## 🚀 Installation & running
 
 ```bash
-# 1. Install dependencies
+# 1. Clone the repository
+git clone https://github.com/David-Brnb/todo-list.git
+cd todo-list
+
+# 2. Install dependencies
 npm install
 
-# 2. Create your environment file (see below) and fill it in
+# 3. Create your environment file (see below) and fill it in
 cp .env.example .env
 
-# 3. Start the dev server
+# 4. Start the dev server
 npx expo start
 ```
 
